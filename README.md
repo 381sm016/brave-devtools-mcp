@@ -17,40 +17,133 @@ MCP clients.
 - [Brave Browser](https://brave.com/) current stable version or newer.
 - [npm](https://www.npmjs.com/).
 
-## Getting started
+## Installation
 
-Add the following config to your MCP client:
+Since `brave-devtools-mcp` is not published to the public npm registry, you need to install it manually from this repository.
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/381sm016/brave-devtools-mcp.git
+cd brave-devtools-mcp
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+### 3. (Optional) Build / prepare
+
+If the project uses a build step (e.g. TypeScript), run it here. If not, you can skip this.
+
+```bash
+npm run build
+```
+
+### 4. Decide how you want to reference the server
+
+You have two main options:
+
+1. **Use a local path directly** (recommended for development)
+2. **Use a global install from the cloned repo**
+
+#### Option A: Use a local path directly
+
+Most MCP clients let you point `command` at a local `node` or `npm` and then pass a relative path to the repo’s entry point.
+
+Example (generic):
 
 ```json
 {
   "mcpServers": {
     "brave-devtools": {
-      "command": "npx",
-      "args": ["-y", "brave-devtools-mcp@latest"]
+      "command": "node",
+      "args": [
+        "/absolute/path/to/brave-devtools-mcp/dist/index.js"
+      ]
     }
   }
 }
 ```
 
-> [!NOTE]
-> Using `brave-devtools-mcp@latest` ensures that your MCP client will always use the latest version of the Brave DevTools MCP server.
+Adjust the path to whatever the actual entry file is (e.g. `bin/brave-devtools-mcp.js`, `dist/index.js`, etc).
+
+#### Option B: Global install from the cloned repo
+
+From inside the cloned repo:
+
+```bash
+npm install -g .
+```
+
+This will make a `brave-devtools-mcp` binary available on your PATH (assuming the project exposes one). You can then use just `brave-devtools-mcp` as the command in your MCP clients.
+
+```bash
+brave-devtools-mcp --help
+```
+
+## Getting started
+
+After manual installation, configure your MCP client to use the locally installed `brave-devtools-mcp` rather than `npx` / npm.
 
 ### MCP Client configuration
 
+Below are per–agent examples using **manual/local installation**.
+
+> Replace `/absolute/path/to/brave-devtools-mcp` and any script paths with the actual location on your system.
+> If you installed globally with `npm install -g .` and have a `brave-devtools-mcp` binary, you can use `"command": "brave-devtools-mcp"` and omit the path.
+
 <details>
   <summary>Claude Code</summary>
-    Use the Claude Code CLI to add the Brave DevTools MCP server (<a href="https://code.claude.com/docs/en/mcp">guide</a>):
+    Use the Claude Code CLI to add the Brave DevTools MCP server (<a href="https://code.claude.com/docs/en/mcp">guide</a>).
+
+If you installed globally and have a `brave-devtools-mcp` binary:
 
 ```bash
-claude mcp add brave-devtools --scope user npx brave-devtools-mcp@latest
+claude mcp add brave-devtools --scope user brave-devtools-mcp
 ```
 
+If you prefer calling the local script directly:
+
+```bash
+claude mcp add brave-devtools --scope user node /absolute/path/to/brave-devtools-mcp/dist/index.js
+```
+
+Adjust the entry file path as needed.
 </details>
 
 <details>
   <summary>Cursor</summary>
 
-Go to `Cursor Settings` -> `MCP` -> `New MCP Server`. Use the config provided above.
+Go to `Cursor Settings` -> `MCP` -> `New MCP Server` and configure it to use the locally installed server.
+
+**If installed globally:**
+
+```json
+{
+  "mcpServers": {
+    "brave-devtools": {
+      "command": "brave-devtools-mcp",
+      "args": []
+    }
+  }
+}
+```
+
+**If using a local script:**
+
+```json
+{
+  "mcpServers": {
+    "brave-devtools": {
+      "command": "node",
+      "args": ["/absolute/path/to/brave-devtools-mcp/dist/index.js"]
+    }
+  }
+}
+```
 
 </details>
 
@@ -58,35 +151,129 @@ Go to `Cursor Settings` -> `MCP` -> `New MCP Server`. Use the config provided ab
   <summary>Copilot / VS Code</summary>
 
 Follow the MCP install <a href="https://code.visualstudio.com/docs/copilot/chat/mcp-servers#_add-an-mcp-server">guide</a>,
-with the standard config from above.
+but reference the local `brave-devtools-mcp` instead of `npx`.
+
+In your `mcpServers` configuration:
+
+**Global binary:**
+
+```json
+{
+  "mcpServers": {
+    "brave-devtools": {
+      "command": "brave-devtools-mcp",
+      "args": []
+    }
+  }
+}
+```
+
+**Local script:**
+
+```json
+{
+  "mcpServers": {
+    "brave-devtools": {
+      "command": "node",
+      "args": ["/absolute/path/to/brave-devtools-mcp/dist/index.js"]
+    }
+  }
+}
+```
 
 </details>
 
 <details>
   <summary>Windsurf</summary>
   Follow the <a href="https://docs.windsurf.com/windsurf/cascade/mcp#mcp-config-json">configure MCP guide</a>
-  using the standard config from above.
+  using a local command instead of `npx`.
+
+Example using a global binary:
+
+```json
+{
+  "mcpServers": {
+    "brave-devtools": {
+      "command": "brave-devtools-mcp",
+      "args": []
+    }
+  }
+}
+```
+
+Or using a local script:
+
+```json
+{
+  "mcpServers": {
+    "brave-devtools": {
+      "command": "node",
+      "args": ["/absolute/path/to/brave-devtools-mcp/dist/index.js"]
+    }
+  }
+}
+```
+
 </details>
 
 <details>
   <summary>Cline</summary>
-  Follow https://docs.cline.bot/mcp/configuring-mcp-servers and use the config provided above.
+  Follow https://docs.cline.bot/mcp/configuring-mcp-servers, but instead of using `npx`, reference the local installation.
+
+**Global binary:**
+
+```json
+{
+  "mcpServers": {
+    "brave-devtools": {
+      "command": "brave-devtools-mcp",
+      "args": []
+    }
+  }
+}
+```
+
+**Local script:**
+
+```json
+{
+  "mcpServers": {
+    "brave-devtools": {
+      "command": "node",
+      "args": ["/absolute/path/to/brave-devtools-mcp/dist/index.js"]
+    }
+  }
+}
+```
+
 </details>
 
 <details>
   <summary>Gemini CLI</summary>
-Install the Brave DevTools MCP server using the Gemini CLI.
+Install the Brave DevTools MCP server manually, then point Gemini at your local command instead of using the npm registry.
 
-**Project wide:**
+**Project wide (global binary):**
 
 ```bash
-gemini mcp add brave-devtools npx brave-devtools-mcp@latest
+gemini mcp add brave-devtools brave-devtools-mcp
 ```
 
-**Globally:**
+**Project wide (local script):**
 
 ```bash
-gemini mcp add -s user brave-devtools npx brave-devtools-mcp@latest
+gemini mcp add brave-devtools node /absolute/path/to/brave-devtools-mcp/dist/index.js
+```
+
+**Globally (global binary):**
+
+```bash
+gemini mcp add -s user brave-devtools brave-devtools-mcp
+```
+
+**Globally (local script):**
+
+```bash
+gemini mcp add -s user brave-devtools node /absolute/path/to/brave-devtools-mcp/dist/index.js
 ```
 
 </details>
@@ -94,10 +281,18 @@ gemini mcp add -s user brave-devtools npx brave-devtools-mcp@latest
 <details>
   <summary>Codex</summary>
   Follow the <a href="https://github.com/openai/codex/blob/main/docs/advanced.md#model-context-protocol-mcp">configure MCP guide</a>
-  using the standard config from above. You can also install using the Codex CLI:
+  using the local `brave-devtools-mcp` command instead of `npx`. You can also register it via the Codex CLI.
+
+**Global binary:**
 
 ```bash
-codex mcp add brave-devtools -- npx brave-devtools-mcp@latest
+codex mcp add brave-devtools -- brave-devtools-mcp
+```
+
+**Local script:**
+
+```bash
+codex mcp add brave-devtools -- node /absolute/path/to/brave-devtools-mcp/dist/index.js
 ```
 
 **On Windows 11**
@@ -109,14 +304,14 @@ Configure the Brave install location and increase the startup timeout by updatin
 command = "cmd"
 args = [
     "/c",
-    "npx",
-    "-y",
-    "brave-devtools-mcp@latest",
+    "node",
+    "C:\\path\\to\\brave-devtools-mcp\\dist\\index.js",
 ]
 env = { SystemRoot="C:\\Windows", PROGRAMFILES="C:\\Program Files" }
 startup_timeout_ms = 20_000
 ```
 
+Adjust the path to match your local checkout.
 </details>
 
 ### Your first prompt
@@ -130,7 +325,7 @@ Check the performance of https://search.brave.com
 Your MCP client should open the browser and record a performance trace.
 
 > [!NOTE]
-> The MCP server will start the browser automatically once the MCP client uses a tool that requires a running browser instance. Connecting to the Brave DevTools MCP server on its own will not automatically start the browser.
+> The MCP server will start the browser automatically once the MCP client uses a tool that requires a running browser instance. Connecting to the Brave DevTools MCP server on its own will not automatically launch Brave.
 
 ## Tools
 
@@ -180,7 +375,7 @@ The Brave DevTools MCP server supports the following configuration options:
 <!-- BEGIN AUTO GENERATED OPTIONS -->
 
 - **`--autoConnect`/ `--auto-connect`**
-  If specified, automatically connects to a running Brave instance using the user data directory identified by the channel param. Requires the remote debugging server to be started in the Brave instance via brave://inspect/#remote-debugging.
+  If specified, automatically connects to a running Brave instance using the user data directory identified by the channel param. Requires the remote debugging server to be started in the Brave instan[...]
   - **Type:** boolean
   - **Default:** `false`
 
@@ -265,9 +460,26 @@ Pass them via the `args` property in the JSON configuration. For example:
 {
   "mcpServers": {
     "brave-devtools": {
-      "command": "npx",
+      "command": "brave-devtools-mcp",
       "args": [
-        "brave-devtools-mcp@latest",
+        "--channel=nightly",
+        "--headless=true",
+        "--isolated=true"
+      ]
+    }
+  }
+}
+```
+
+Or, if using a local script:
+
+```json
+{
+  "mcpServers": {
+    "brave-devtools": {
+      "command": "node",
+      "args": [
+        "/absolute/path/to/brave-devtools-mcp/dist/index.js",
         "--channel=nightly",
         "--headless=true",
         "--isolated=true"
@@ -285,9 +497,25 @@ You can connect directly to a Brave WebSocket endpoint and include custom header
 {
   "mcpServers": {
     "brave-devtools": {
-      "command": "npx",
+      "command": "brave-devtools-mcp",
       "args": [
-        "brave-devtools-mcp@latest",
+        "--wsEndpoint=ws://127.0.0.1:9222/devtools/browser/<id>",
+        "--wsHeaders={\"Authorization\":\"Bearer YOUR_TOKEN\"}"
+      ]
+    }
+  }
+}
+```
+
+Or with a local script:
+
+```json
+{
+  "mcpServers": {
+    "brave-devtools": {
+      "command": "node",
+      "args": [
+        "/absolute/path/to/brave-devtools-mcp/dist/index.js",
         "--wsEndpoint=ws://127.0.0.1:9222/devtools/browser/<id>",
         "--wsHeaders={\"Authorization\":\"Bearer YOUR_TOKEN\"}"
       ]
@@ -298,7 +526,7 @@ You can connect directly to a Brave WebSocket endpoint and include custom header
 
 To get the WebSocket endpoint from a running Brave instance, visit `http://127.0.0.1:9222/json/version` and look for the `webSocketDebuggerUrl` field.
 
-You can also run `npx brave-devtools-mcp@latest --help` to see all available configuration options.
+You can also run `brave-devtools-mcp --help` (or `node /absolute/path/to/brave-devtools-mcp/dist/index.js --help`) to see all available configuration options.
 
 ## Concepts
 
@@ -348,8 +576,25 @@ The following code snippet is an example configuration:
 {
   "mcpServers": {
     "brave-devtools": {
-      "command": "npx",
-      "args": ["brave-devtools-mcp@latest", "--autoConnect", "--channel=stable"]
+      "command": "brave-devtools-mcp",
+      "args": ["--autoConnect", "--channel=stable"]
+    }
+  }
+}
+```
+
+Or, with a local script:
+
+```json
+{
+  "mcpServers": {
+    "brave-devtools": {
+      "command": "node",
+      "args": [
+        "/absolute/path/to/brave-devtools-mcp/dist/index.js",
+        "--autoConnect",
+        "--channel=stable"
+      ]
     }
   }
 }
@@ -364,13 +609,13 @@ Check the performance of https://search.brave.com
 ```
 
 > [!NOTE]
-> The <code>autoConnect</code> option requires the user to start Brave. If the user has multiple active profiles, the MCP server will connect to the default profile (as determined by Brave). The MCP server has access to all open windows for the selected profile.
+> The <code>autoConnect</code> option requires the user to start Brave. If the user has multiple active profiles, the MCP server will connect to the default profile (as determined by Brave). The MCP s[...]
 
 The Brave DevTools MCP server will try to connect to your running Brave instance.
 
 #### Manual connection using port forwarding
 
-You can connect to a running Brave instance by using the `--browser-url` option. This is useful if you are running the MCP server in a sandboxed environment that does not allow starting a new Brave instance.
+You can connect to a running Brave instance by using the `--browser-url` option. This is useful if you are running the MCP server in a sandboxed environment that does not allow starting a new Brave in[...]
 
 Here is a step-by-step guide on how to connect to a running Brave instance:
 
@@ -382,9 +627,24 @@ Add the `--browser-url` option to your MCP client configuration. The value of th
 {
   "mcpServers": {
     "brave-devtools": {
-      "command": "npx",
+      "command": "brave-devtools-mcp",
       "args": [
-        "brave-devtools-mcp@latest",
+        "--browser-url=http://127.0.0.1:9222"
+      ]
+    }
+  }
+}
+```
+
+Or, with a local script:
+
+```json
+{
+  "mcpServers": {
+    "brave-devtools": {
+      "command": "node",
+      "args": [
+        "/absolute/path/to/brave-devtools-mcp/dist/index.js",
         "--browser-url=http://127.0.0.1:9222"
       ]
     }
@@ -395,9 +655,9 @@ Add the `--browser-url` option to your MCP client configuration. The value of th
 **Step 2: Start the Brave browser**
 
 > [!WARNING]
-> Enabling the remote debugging port opens up a debugging port on the running browser instance. Any application on your machine can connect to this port and control the browser. Make sure that you are not browsing any sensitive websites while the debugging port is open.
+> Enabling the remote debugging port opens up a debugging port on the running browser instance. Any application on your machine can connect to this port and control the browser. Make sure that you are[...]
 
-Start the Brave browser with the remote debugging port enabled. Make sure to close any running Brave instances before starting a new one with the debugging port enabled. The port number you choose must be the same as the one you specified in the `--browser-url` option in your MCP client configuration.
+Start the Brave browser with the remote debugging port enabled. Make sure to close any running Brave instances before starting a new one with the debugging port enabled. The port number you choose mus[...]
 
 **macOS**
 
@@ -427,7 +687,7 @@ Check the performance of https://search.brave.com
 
 Your MCP client should connect to the running Brave instance and receive a performance report.
 
-If you hit VM-to-host port forwarding issues, see the "Remote debugging between virtual machine (VM) and host fails" section in [`docs/troubleshooting.md`](./docs/troubleshooting.md#remote-debugging-between-virtual-machine-vm-and-host-fails).
+If you hit VM-to-host port forwarding issues, see the "Remote debugging between virtual machine (VM) and host fails" section in [`docs/troubleshooting.md`](./docs/troubleshooting.md#remote-debugging-b[...]
 
 ## Known limitations
 
@@ -439,3 +699,4 @@ Brave that requires permissions to create its own sandboxes. As a workaround,
 either disable sandboxing for `brave-devtools-mcp` in your MCP client or use
 `--browser-url` to connect to a Brave instance that you start manually outside
 of the MCP client sandbox.
+````
